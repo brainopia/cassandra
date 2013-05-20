@@ -19,6 +19,7 @@ require "#{here}/../vendor/#{Cassandra.VERSION}/gen-rb/cassandra"
 $LOAD_PATH << "#{here}"
 
 require 'cassandra/extensions/thrift/bytes'
+require 'cassandra/extensions/thrift/framed_transport'
 require 'cassandra/helpers'
 require 'cassandra/array'
 require 'cassandra/time'
