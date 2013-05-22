@@ -36,11 +36,11 @@ class Cassandra
 
     def pack
       packed = @parts.map do |part|
-        [part.bytes.length].pack('n') + part + "\x00"
+        [part.bytes.to_a.length].pack('n') + part + "\x00"
       end
       if @column_slice
         part = @parts[-1]
-        packed[-1] = [part.bytes.length].pack('n') + part + slice_end_of_component
+        packed[-1] = [part.bytes.to_a.length].pack('n') + part + slice_end_of_component
       end
       return packed.join('')
     end
