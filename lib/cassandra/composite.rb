@@ -1,3 +1,5 @@
+# encoding: ascii-8bit
+
 class Cassandra
   class Composite
     include ::Comparable
