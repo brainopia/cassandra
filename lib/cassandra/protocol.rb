@@ -48,20 +48,20 @@ class Cassandra
       klass = column_name_class(column_family)
       (sub_columns || columns).map { |name| result[klass.new(name)] }
     end
-    
+
     def _multi_get_columns(column_family, keys, columns, sub_columns, consistency)
       result = if is_super(column_family) and sub_columns
         predicate = CassandraThrift::SlicePredicate.new(:column_names => sub_columns)
         column_parent = CassandraThrift::ColumnParent.new(
-          :column_family => column_family, 
+          :column_family => column_family,
           :super_column => columns.kind_of?(Array) ? columns[0] : columns )
         multi_sub_columns_to_hash!(column_family, client.multiget_slice(keys, column_parent, predicate, consistency))
       else
         predicate = CassandraThrift::SlicePredicate.new(:column_names => columns)
         column_parent = CassandraThrift::ColumnParent.new(:column_family => column_family)
         multi_columns_to_hash!(column_family, client.multiget_slice(keys, column_parent, predicate, consistency))
-      end 
-      
+      end
+
       klass = column_name_class(column_family)
       OrderedHash[result.keys.map { |key| [key, (sub_columns || columns).map { |column| result[key][klass.new(column)] }] }]
     end
@@ -102,20 +102,25 @@ class Cassandra
       end
     end
 
-    def _get_range(column_family, start_key, finish_key, key_count, columns, start, finish, count, consistency, reversed=false)
+    def _get_range(column_family, options)
       column_parent = CassandraThrift::ColumnParent.new(:column_family => column_family)
-      predicate = if columns
-                    CassandraThrift::SlicePredicate.new(:column_names => columns)
+      predicate = if options[:columns]
+                    CassandraThrift::SlicePredicate.new(:column_names => options[:columns])
                   else
-                    CassandraThrift::SlicePredicate.new(:slice_range => 
+                    CassandraThrift::SlicePredicate.new(:slice_range =>
                       CassandraThrift::SliceRange.new(
-                        :start  => start, 
-                        :finish => finish,
-                        :count  => count,
-                        :reversed => reversed))
+                        :start    => options[:start].to_s,
+                        :finish   => options[:finish].to_s,
+                        :count    => options[:count],
+                        :reversed => options[:reversed]))
                   end
-      range = CassandraThrift::KeyRange.new(:start_key => start_key, :end_key => finish_key, :count => key_count)
-      client.get_range_slices(column_parent, predicate, range, consistency)
+      range = CassandraThrift::KeyRange.new(
+        :start_key   => options[:start_key].to_s,
+        :end_key     => options[:finish_key].to_s,
+        :start_token => options[:start_token],
+        :end_token   => options[:end_token],
+        :count       => options[:key_count])
+      client.get_range_slices(column_parent, predicate, range, options[:consistency])
     end
 
     # TODO: Supercolumn support

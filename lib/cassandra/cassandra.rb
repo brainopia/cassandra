@@ -722,25 +722,17 @@ class Cassandra
 
     column_family, _, _, options =
       extract_and_validate_params(column_family, "", [options],
-                                  READ_DEFAULTS.merge(:start_key  => '',
-                                                      :finish_key => '',
-                                                      :key_count  => 100,
-                                                      :columns    => nil,
-                                                      :reversed   => false
+                                  READ_DEFAULTS.merge(:start_key   => '',
+                                                      :finish_key  => '',
+                                                      :key_count   => 100,
+                                                      :columns     => nil,
+                                                      :reversed    => false,
+                                                      :start_token => nil,
+                                                      :end_token   => nil
                                                      )
                                  )
 
-    results = _get_range( column_family,
-                          options[:start_key].to_s,
-                          options[:finish_key].to_s,
-                          options[:key_count],
-                          options[:columns],
-                          options[:start].to_s,
-                          options[:finish].to_s,
-                          options[:count],
-                          options[:consistency],
-                          options[:reversed] )
-
+    results = _get_range(column_family, options)
     multi_key_slices_to_hash(column_family, results, return_empty_rows)
   end
 
