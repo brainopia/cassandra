@@ -1,5 +1,3 @@
-# encoding: ascii-8bit
-
 class Cassandra
   class Composite
     include ::Comparable
@@ -38,11 +36,11 @@ class Cassandra
 
     def pack
       packed = @parts.map do |part|
-        [part.bytes.to_a.length].pack('n') + part + "\x00"
+        [part.bytesize].pack('n').force_encoding('UTF-8') + part.dup.force_encoding('UTF-8') + "\x00"
       end
       if @column_slice
         part = @parts[-1]
-        packed[-1] = [part.bytes.to_a.length].pack('n') + part + slice_end_of_component
+        packed[-1] = [part.bytesize].pack('n').force_encoding('UTF-8') + part + slice_end_of_component
       end
       return packed.join('')
     end
