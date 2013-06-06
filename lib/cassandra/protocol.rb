@@ -114,12 +114,17 @@ class Cassandra
                         :count    => options[:count],
                         :reversed => options[:reversed]))
                   end
-      range = CassandraThrift::KeyRange.new(
-        :start_key   => options[:start_key].to_s,
-        :end_key     => options[:finish_key].to_s,
-        :start_token => options[:start_token],
-        :end_token   => options[:end_token],
-        :count       => options[:key_count])
+      if options[:start_token] and options[:end_token]
+        range = CassandraThrift::KeyRange.new(
+          :start_token => options[:start_token].to_s,
+          :end_token   => options[:end_token].to_s,
+          :count       => options[:key_count])
+      else
+        range = CassandraThrift::KeyRange.new(
+          :start_key   => options[:start_key].to_s,
+          :end_key     => options[:finish_key].to_s,
+          :count       => options[:key_count])
+      end
       client.get_range_slices(column_parent, predicate, range, options[:consistency])
     end
 
