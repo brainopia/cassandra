@@ -117,16 +117,12 @@ class Cassandra
 
       if options[:start_token]
         options[:start_token] = options[:start_token].to_s
-        if options[:start_key] and options[:start_key].empty?
-          options.delete :start_key
-        end
+        options.delete :start_key if options[:start_key].empty?
       end
 
       if options[:end_token]
         options[:end_token] = options[:end_token].to_s
-        if options[:end_key] and options[:end_key].empty?
-          options.delete :end_key
-        end
+        options.delete :end_key if options[:end_key].empty?
       end
 
       range = CassandraThrift::KeyRange.new(
