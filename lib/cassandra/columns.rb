@@ -62,7 +62,7 @@ class Cassandra
     end
 
     def multi_key_slices_to_hash(column_family, array, return_empty_rows = false)
-      ret = OrderedHash.new
+      ret = {}
       array.each do |value|
         next if return_empty_rows == false && value.columns.length == 0
         ret[value.key] = columns_to_hash(column_family, value.columns)
@@ -97,7 +97,7 @@ class Cassandra
     end
 
     def columns_to_hash_for_classes(columns, column_name_maker, sub_column_name_maker = nil)
-      hash = OrderedHash.new
+      hash = {}
       Array(columns).each do |c|
         c = c.super_column || c.column || c.counter_column || c.counter_super_column if c.is_a?(CassandraThrift::ColumnOrSuperColumn)
         case c

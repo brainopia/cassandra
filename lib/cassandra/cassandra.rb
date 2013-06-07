@@ -163,7 +163,7 @@ class Cassandra
   def column_families
     return false if Cassandra.VERSION.to_f < 0.7
 
-    schema.cf_defs.inject(Hash.new){|memo, cf_def| memo[cf_def.name] = cf_def; memo;}
+    schema.cf_defs.inject({}){|memo, cf_def| memo[cf_def.name] = cf_def; memo;}
   end
 
   ##
@@ -541,7 +541,7 @@ class Cassandra
   #
   # FIXME: Not real multi; needs server support
   def multi_count_columns(column_family, keys, *options)
-    OrderedHash[*keys.map { |key| [key, count_columns(column_family, key, *options)] }._flatten_once]
+    Hash[*keys.map { |key| [key, count_columns(column_family, key, *options)] }._flatten_once]
   end
 
   ##
@@ -624,12 +624,7 @@ class Cassandra
     column_family, column, sub_column, options =
       extract_and_validate_params(column_family, keys, columns_and_options, READ_DEFAULTS)
 
-    hash = _multiget(column_family, keys, column, sub_column, options[:count], options[:start], options[:finish], options[:reversed], options[:consistency])
-
-    # Restore order
-    ordered_hash = OrderedHash.new
-    keys.each { |key| ordered_hash[key] = hash[key] || (OrderedHash.new if is_super(column_family) and !sub_column) }
-    ordered_hash
+    _multiget(column_family, keys, column, sub_column, options[:count], options[:start], options[:finish], options[:reversed], options[:consistency])
   end
 
   ##
@@ -997,7 +992,7 @@ class Cassandra
     key_slices = _get_indexed_slices(column_family, index_clause, columns, options[:count], options[:start],
       options[:finish], options[:reversed], options[:consistency])
 
-    key_slices.inject(OrderedHash.new) {|h, key_slice| h[key_slice.key] = key_slice.columns; h }
+    key_slices.inject({}) {|h, key_slice| h[key_slice.key] = key_slice.columns; h }
   end
 
   protected

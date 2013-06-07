@@ -63,7 +63,7 @@ class Cassandra
       end
 
       klass = column_name_class(column_family)
-      OrderedHash[result.keys.map { |key| [key, (sub_columns || columns).map { |column| result[key][klass.new(column)] }] }]
+      Hash[result.keys.map { |key| [key, (sub_columns || columns).map { |column| result[key][klass.new(column)] }] }]
     end
 
     def _multiget(column_family, keys, column, sub_column, count, start, finish, reversed, consistency)
