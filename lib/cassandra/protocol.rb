@@ -115,8 +115,14 @@ class Cassandra
                         :reversed => options[:reversed]))
                   end
 
-      [:start_token, :start_key, :end_token, :end_key].each do |it|
-        options[it] = options[it].to_s if options[it]
+      if options[:start_token]
+        options[:start_token] = options[:start_token].to_s
+        options.delete :start_key if options[:start_key].empty?
+      end
+
+      if options[:end_token]
+        options[:end_token] = options[:end_token].to_s
+        options.delete :end_key if options[:end_key].empty?
       end
 
       range = CassandraThrift::KeyRange.new(

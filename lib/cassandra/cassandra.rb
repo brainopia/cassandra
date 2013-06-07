@@ -775,6 +775,7 @@ class Cassandra
         end
 
         last_key = key
+        options.delete :start_token
       end
     end
 
