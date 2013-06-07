@@ -104,9 +104,9 @@ class Cassandra
         when CassandraThrift::SuperColumn
           hash.[]=(column_name_maker.call(c.name), columns_to_hash_for_classes(c.columns, sub_column_name_maker)) # Pop the class stack, and recurse
         when CassandraThrift::Column
-          hash.[]=(column_name_maker.call(c.name), c.value, c.timestamp)
+          hash.[]=(column_name_maker.call(c.name), c.value)#, c.timestamp)
         when CassandraThrift::CounterColumn
-          hash.[]=(column_name_maker.call(c.name), c.value, 0)
+          hash.[]=(column_name_maker.call(c.name), c.value)#, 0)
         when CassandraThrift::CounterSuperColumn
           hash.[]=(column_name_maker.call(c.name), columns_to_hash_for_classes(c.columns, sub_column_name_maker)) # Pop the class stack, and recurse
         end
