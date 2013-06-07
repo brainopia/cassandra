@@ -122,16 +122,16 @@ class Cassandra
         end
       end
 
-      if options[:finish_token]
-        options[:finish_token] = options[:finish_token].to_s
-        if options[:finish_key] and options[:finish_key].empty?
-          options.delete :finish_key
+      if options[:end_token]
+        options[:end_token] = options[:end_token].to_s
+        if options[:end_key] and options[:end_key].empty?
+          options.delete :end_key
         end
       end
 
       range = CassandraThrift::KeyRange.new(
         :start_token => options[:start_token],
-        :end_token   => options[:finish_token],
+        :end_token   => options[:end_token],
         :start_key   => options[:start_key],
         :end_key     => options[:finish_key],
         :count       => options[:key_count])
