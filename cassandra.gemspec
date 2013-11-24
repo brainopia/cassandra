@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
+    s.add_dependency 'thin'
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<thrift_client>, ["< 0.10", ">= 0.7.0"])
