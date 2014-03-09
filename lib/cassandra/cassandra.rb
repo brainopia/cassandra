@@ -760,7 +760,7 @@ class Cassandra
         next if last_key == key
         next if num_results == count
 
-        unless columns == {}
+        if columns != {} or options[:return_empty_rows]
           if block_given?
             yield key, columns
           else
