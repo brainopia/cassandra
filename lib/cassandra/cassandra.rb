@@ -747,13 +747,13 @@ class Cassandra
     num_results   = 0
 
     options[:start_key] ||= ''
-    last_key  = nil
+    last_key = nil
 
     while count.nil? || count > num_results
-      res = get_range_single(column_family, options.merge!(:start_key => last_key || options[:start_key],
-                                                           :key_count => batch_size,
-                                                           :return_empty_rows => true
-                                                          ))
+      res = get_range_single(column_family, options.merge(:start_key => last_key || options[:start_key],
+                                                          :key_count => batch_size,
+                                                          :return_empty_rows => true
+                                                         ))
       break if res.keys.last == last_key
 
       res.each do |key, columns|
