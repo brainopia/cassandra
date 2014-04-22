@@ -40,7 +40,7 @@ class Cassandra
       end
       if @column_slice
         part = @parts[-1]
-        packed[-1] = [part.bytesize].pack('n').force_encoding('UTF-8') + part + slice_end_of_component
+        packed[-1] = [part.bytesize].pack('n').force_encoding('UTF-8') + part.force_encoding('UTF-8') + slice_end_of_component
       end
       return packed.join('')
     end
